@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <math.h>
 
 #define MAX_BUF 64
 
@@ -62,5 +63,18 @@ int main(){
              fclose(fp);
              float pressure = atoi(buf);
              printf("Current Pressure: %f hPa (mbars)\n\n",pressure/100); //dividing by 100, because step is 0.01hPa =1Pa
+
+             //Calculating absolute altitude, in meters
+             float sea_level_pressure = 1013.25; // in hPa
+             float cur_altitude;
+             float pressured = pressure/100; // in hPa
+             cur_altitude = 44330*(1.0-pow(pressured/sea_level_pressure, 1.0/5.255));
+             printf("Current Altitude (above sea level): %f meters \n", cur_altitude);
+
+             //Calculating pressure at sea level
+             float pressure_sea_level;
+             pressure_sea_level = pressured/(1.0-pow(cur_altitude/44330, 5.255));
+             printf("Current Pressure at sea level: %f hPa \n\n", pressure_sea_level);
+
      }
 }
