@@ -29,7 +29,7 @@ int main(){
 
        while(1)
        {
-              sleep(2);
+              sleep(10);
               char buf[MAX_BUF];
               //Attempt to open the file of the device.
               snprintf(path, sizeof path, "/sys/bus/i2c/drivers/bmp085/1-0077/temp0_input");
@@ -42,10 +42,10 @@ int main(){
 	            printf("cannot read device!");
 	           }
               fclose(fp);
-              float temp = atoi(buf);  // default code
-              float tempf = atof(buf);   // test value, from char to float direct
-              printf("Current Temperature: %f °C\n",tempf/10); //test printf
-              printf("Current Temperature: %f °C\n",temp/10);  //default, dividing by 10 because step is 0.1°C
+              //float temp = atoi(buf);  // default code
+              float temp = atof(buf);   // test value, from char to float direct
+              printf("Temperature: %.2f C\n",temp/10); //test printf
+              //printf("Current Temperature: %f °C\n",temp/10);  //default, dividing by 10 because step is 0.1°C
 
 
               sleep(1); //wait 1 sec
@@ -62,19 +62,19 @@ int main(){
 	          }
              fclose(fp);
              float pressure = atoi(buf);
-             printf("Current Pressure: %f hPa (mbars)\n\n",pressure/100); //dividing by 100, because step is 0.01hPa =1Pa
+             printf("Pressure: %.2f hPa \n",pressure/100); //dividing by 100, because step is 0.01hPa =1Pa
 
              //Calculating absolute altitude, in meters
              float sea_level_pressure = 1013.25; // in hPa
              float cur_altitude;
              float pressured = pressure/100; // in hPa
              cur_altitude = 44330*(1.0-pow(pressured/sea_level_pressure, 1.0/5.255));
-             printf("Current Altitude (above sea level): %f meters \n", cur_altitude);
+             printf("Altitude: %.0f meters \n", cur_altitude);
 
              //Calculating pressure at sea level
              float pressure_sea_level;
-             pressure_sea_level = pressured/(1.0-pow(cur_altitude/44330, 5.255));
-             printf("Current Pressure at sea level: %f hPa \n\n", pressure_sea_level);
+             pressure_sea_level = pressured/(pow(1.0-(cur_altitude/44330), 5.255));
+             printf("Pressure at sea level: %.2f hPa \n\n", pressure_sea_level);
 
      }
 }
